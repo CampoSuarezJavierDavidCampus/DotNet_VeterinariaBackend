@@ -11,342 +11,382 @@
 	// 		"$2"
 	// 	],
 	// 	"description": "Log output to console"
-	// }
-
-	"Controller-Structure":{
-		"prefix": "controller-structure",
-		"body":[
-			"using Api.Controllers;",
-			"using AutoMapper;",
-			"using Microsoft.AspNetCore.Mvc;",
-			"using Microsoft.AspNetCore.Authorization;",
-			"using Models.Dtos;",
-			"using Core.Interfaces;",
-			"using Api.Helpers;",
-			"using Core.Entities;",
-			"\nnamespace Api.Controllers;",
-			"[ApiVersion(\"1.0\")]",
-			"[ApiVersion(\"1.1\")]",
-			"public class ${1:Entity}Controller : BaseApiController{",
-			"\t\tprivate readonly IUnitOfWork _UnitOfWork;",
-			"\t\tprivate readonly IMapper _Mapper;",
-			"\t\tprivate readonly ILogger<${1:Entity}Controller> _Logger;\n",			
-			"\t\tpublic ${1:Entity}Controller (\nIUnitOfWork unitOfWork,\nIMapper mapper,\nILogger<${1:Entity}Controller> logger\n){",			
-			"\t\t\t_UnitOfWork = unitOfWork;",
-			"\t\t\t_Mapper = mapper;",
-			"\t\t\t_Logger = logger;",
-			"\t\t}\n",			
-			"\t\t[HttpGet]",			
-			"\t\t[MapToApiVersion(\"1.0\")]",			
-			"\t\t[ProducesResponseType(StatusCodes.Status200OK)]",
-			"\t\t[ProducesResponseType(StatusCodes.Status204NoContent)]",
-			"\t\t[ProducesResponseType(StatusCodes.Status400BadRequest)]",
-			"\t\t[ProducesResponseType(StatusCodes.Status404NotFound)]",
-			"\t\tpublic async Task<ActionResult> Get(){",	
-			"\t\t\ttry{",
-			"\t\t\t\tvar records = await _UnitOfWork.${2:Entities}.GetAllAsync();",
-			"\t\t\t\tif (records == null){return NotFound();}",
-			"\t\t\t\tif (!records.Any()){return NoContent();}",
-			"\t\t\t\treturn Ok(_Mapper.Map<List<${3:DtoEntity}>>(records));",
-			"\t\t\t}catch (Exception ex){",
-			"\t\t\t\t_Logger.LogError(ex.Message);",
-			"\t\t\t\treturn BadRequest();",
-			"\t\t\t}",
-			"\t\t}\n",			
-			"\t\t[HttpGet(\"{id}\")]",			
-			"\t\t[MapToApiVersion(\"1.0\")]",
-			"\t\t[ProducesResponseType(StatusCodes.Status200OK)]",
-			"\t\t[ProducesResponseType(StatusCodes.Status400BadRequest)]",
-			"\t\t[ProducesResponseType(StatusCodes.Status404NotFound)]",
-			"\t\tpublic async Task<ActionResult> Get(${4|int,string|} id){",
-			"\t\t\ttry{",
-			"\t\t\t\tvar record = await _UnitOfWork.${2:Entities}.GetByIdAsync(id);",
-			"\t\t\t\tif (record == null){return NotFound();}",
-			"\t\t\t\treturn Ok(_Mapper.Map<${3:DtoEntity}>(record););",
-			"\t\t\t}catch (Exception ex){",
-			"\t\t\t\t_Logger.LogError(ex.Message);",
-			"\t\t\t\treturn BadRequest();",
-			"\t\t\t}",
-			"\t\t}\n",
-			"\t\t[HttpGet]",
-			"\t\t[MapToApiVersion(\"1.1\")]",
-			"\t\t[Authorize]",
-			"\t\t[ProducesResponseType(StatusCodes.Status200OK)]",
-			"\t\t[ProducesResponseType(StatusCodes.Status204NoContent)]",
-			"\t\t[ProducesResponseType(StatusCodes.Status400BadRequest)]",
-			"\t\t[ProducesResponseType(StatusCodes.Status401Unauthorized)]",
-    		"\t\t[ProducesResponseType(StatusCodes.Status404NotFound)]",
-			"\t\tpublic async Task<ActionResult> Get11([FromQuery] Params conf){",
-			"\t\t\ttry{",
-			"\t\t\t\tvar param = new Param(conf);",
-			"\t\t\t\tvar records = await _UnitOfWork.${2:Entities}.GetAllAsync(param);",
-			"\t\t\t\tif (records == null){return NotFound();}",
-			"\t\t\t\tif (!records.Any()){return NoContent();}",
-			"\t\t\t\tvar recordDtos = _Mapper.Map<List<${3:DtoEntity}>>(records);",
-			"\t\t\t\tIPager<${3:DtoEntity}> pager = new Pager<${3:DtoEntity}>(recordDtos,records?.Count(),param) ;",
-			"\t\t\t\treturn Ok(pager);",
-			"\t\t\t}catch (Exception ex){",
-			"\t\t\t\t_Logger.LogError(ex.Message);",
-			"\t\t\t\treturn BadRequest();",
-			"\t\t\t}",
-			"\t\t}\n",
-			"    [HttpPost]",
-			"    [ProducesResponseType(StatusCodes.Status201Created)]",
-			"    [ProducesResponseType(StatusCodes.Status400BadRequest)]",
-			"    public async Task<ActionResult<${3:DtoEntity}>> Post(${3:DtoEntity} recordDto){",
-			"       var record = _Mapper.Map<${8:Entity}>(recordDto);",
-			"       _UnitOfWork.${2:Entities}.Add(record);",
-			"       await _UnitOfWork.SaveAsync();",
-			"       if (record == null){",			
-			"           return BadRequest();",
-			"       }",			
-			"       return CreatedAtAction(nameof(Post),new {id= record.Id, recordDto});",
-			"    }",
-			"",
-			"    [HttpPut(\"{id}\")]",
-			"    [MapToApiVersion(\"1.0\")]",
-			"    [ProducesResponseType(StatusCodes.Status200OK)]",
-			"    [ProducesResponseType(StatusCodes.Status404NotFound)]",
-			"    [ProducesResponseType(StatusCodes.Status400BadRequest)]",
-			"    public async Task<ActionResult<${3:DtoEntity}>> Put(${4|int,string|} id, [FromBody]${3:DtoEntity}? recordDto){",
-			"       if(recordDto == null)",
-			"           return NotFound();",
-			"       var record = _Mapper.Map<${8:Entity}>(recordDto);",
-			"       record.Id = id;",
-			"       _UnitOfWork.${2:Entities}.Update(record);",
-			"       await _UnitOfWork.SaveAsync();",
-			"       return recordDto;",
-			"    }",
-			"",
-			"    [HttpDelete(\"{id}\")]",
-			"    [MapToApiVersion(\"1.0\")]",
-			"    [ProducesResponseType(StatusCodes.Status204NoContent)]",
-			"    [ProducesResponseType(StatusCodes.Status404NotFound)]",
-			"    public async Task<IActionResult> Delete(${4|int,string|} id){",
-			"       var record = await _UnitOfWork.${2:Entities}.GetByIdAsync(id);",
-			"       if(record == null){",
-			"           return NotFound();",
-			"       }",
-			"       _UnitOfWork.${2:Entities}.Remove(record);",
-			"       await _UnitOfWork.SaveAsync();",
-			"       return NoContent();",
-			"    }",
-			"}",
-		],
-		"description": "create the basic structure to create a controller"
-	},
-	"Auto-Increment-Configuration-Property":{
-		"prefix":"conf-prop-auto-increment",
-		"body":[
-			"builder.Property(x => x.Id)",
-			"\t.IsRequired()",
-			"\t.HasAnnotation(\"MySql:ValueGenerationStrategy\", MySqlValueGenerationStrategy.IdentityColumn)",
-			"\t.HasColumnName(\"idPk\");\n",
-			"$0"
-		],
-		"description":"Create a autoincrement configuration property"
-	},
-	"many-to-many-property-configuration":{
-		"prefix":"conf-prop-many-to-many",
-		"body":[
-			"builder.HasMany(p => p.${1:PluralProperyA})",
-			"\t.WithMany(p => p.${2:PluralProperyB})",
-			"\t.UsingEntity<${3:PropertyC}>(",
-			"\t\tt => t.HasOne(j => j.${4:PropertyA})",
-			"\t\t\t.WithMany(j => j.${3:PropertyC})",
-			"\t\t\t.HasForeignKey(j => j.${4:PropertyA}Id),",
-			"\t\tt => t.HasOne(j => j.${5:PropertyB})",
-			"\t\t\t.WithMany(j => j.${3:PropertyC})",
-			"\t\t\t.HasForeignKey(j => j.${5:PropertyB}Id),",
-			"\t\tt => {//--Configurations",
-			"\t\t\tt.ToTable(\"${6:TableName}\");",
-			"\t\t\tt.HasKey(j => new{j.${4:PropertyA}Id,j.${5:PropertyB}Id});",
-			"\n\t\t\t$0",
-			"\t\t}",
-			"\t);"
-		],
-		"description":"Create configure many to many relationship properties"
-	},
-	"maxlength-configuration-property":{
-		"prefix":"conf-prop-maxlength",
-		"body":[
-			"builder.Property(x => x.${1:property})",
-			"\t.IsRequired()",
-			"\t.HasColumnName(\"${2:propertyName}${3:Table}\")",
-			"\t.HasMaxLength(${4|50,100,200,250|});\n",
-			"$0"
-		],
-		"description":"create a configuration property with max lenght"
-	},
-	"UniqueIndex-configuration-property":{
-		"prefix":"conf-prop-uniqueIndex",
-		"body":[
-			"builder.HasIndex(p => new{",
-			"\tp.${1:property1},p.${2:property2}",
-			"})",
-			".HasDatabaseName(\"IX_${1:property1}_${2:property2}\")",
-			".IsUnique();\n",
-			"$0"
-		],
-		"description":"Create a unique index"
-	},
-	"Simple-Configuration":{
-		"prefix":"simple-conf",
-		"body":[
-			"using Core.Entities;",
-			"using Microsoft.EntityFrameworkCore;",
-			"using Microsoft.EntityFrameworkCore.Metadata.Builders;",
-			"\nnamespace Persistence.Data.Configurations;",
-			"public class ${1:Entity}Configuration : IEntityTypeConfiguration<${1:Entity}>{",
-			"\tpublic void Configure(EntityTypeBuilder<${1:Entity}> builder){",
-			"\t\tbuilder.ToTable(\"${2:TableName}\");",
-			"\t\tbuilder.HasKey(x => x.Id);",
-			"\t\t$0",
-			"\t}",
-			"}"
-		],
-		"description":"Create a simple Configuration"
-	},
-	"Many-To-Many-Entity":{
-		"prefix":"Many-To-Many-Entity",
-		"body":[
-			"namespace Domain.Entities;",
-			"public class ${1:Entity}${3:PluralEntityB}{",
-			"\tpublic int ${2:EntityB}Id { get; set; }",
-			"\tpublic ${2:EntityB}? ${2:EntityB} { get; set; }",
-			"",
-			"\tpublic int ${1:Entity}Id { get; set; }",
-			"\tpublic ${1:Entity}? ${1:Entity} { get; set; }",
-			"}"
-		],
-		"description":"Create many to many relationship."
-	},
-	"Mapping-Class":{
-		"prefix": "Mapping-Class",
-		"body": [
-			"using Api.Dtos;",
-			"using AutoMapper;",
-			"using Domain.Entities;",
-			"namespace Api.Profiles;",
-			"public class Mapping${1:Entity}Profile: Profile{",
-			"   public Mapping${1:Entity}Profile(){",
-			"       CreateMap<${2:EntityDto},${1:Entity}>()",
-			"           .ReverseMap();",
-			"    }",
-			"}"
-		],
-		"description": "this snipper will create a new basic profile class"
-	},
-	"Dbset-property":{
-		"prefix":"prop-DbSet",
-		"body":[
-			"public DbSet<${1:Entity}> ${2:PluralEntity} { get; set; }",
-		],
-		"description":"Create a DbSet property"
-	},
-	"Empty-String-Property":{
-		"prefix":"prop-empty-string",
-		"body":[
-			"public string ${1:property} { get; set; } = String.Empty;"
-		],
-		"description":"Create a string.Empty prop"
-	},
-	"Many-To-Many-Property":{
-		"prefix":"prop-many-to-many",
-		"body":[
-			"public IEnumerable<${1:EntityA}> ${3:PluralEntityA} { get; set; } = new HashSet<${1:EntityA}>();",
-			"public IEnumerable<${2:EntityC}> ${4:PluralEntityC} { get; set; } = new HashSet<${2:EntityC}>();",
-		],
-		"description":"Create many to many relationship property"
-	},
-	"One-To-Many-Property":{
-		"prefix":"prop-one-to-many",
-		"body":[
-			"public ${1|int,string|} ${2:property}Id { get; set; }",
-			"public ${2:property} ${2:property} { get; set; } = null!;"
-		],
-		"description":"Create One to many property"
-	},
-	"Simple-Entity":{
-		"prefix":"Simple-Entity",
-		"body":[
-			"namespace Core.Entities;\n",
-			"public class ${1:entity}: BaseEntityWith${2|Int,String|}Id{",
-			"\t${0}",
-			"}"
-		],
-		"description":"Create Simple Entity"
-	},
-	"many-To-One-property":{
-		"prefix":"prop-many-to-one",
-		"body":[
-			"public ICollection<${1:EntityA}> ${3:PluralEntityA} { get; set; } = new HashSet<${1:EntityA}>();",
-		],
-		"description":"create a one to many relationship property"
-	},
-	"many-to-one-configuration-property":{
-		"prefix":"conf-prop-one-to-many",
-		"body":[
-			"builder.HasOne(x => x.${1:propertyA})",
-			"\t.WithMany(x => x.${2:propertyB})",
-			"\t.HasForeignKey(x => x.${1:propertyA}Id);",
-			"\n$0"
-		],
-		"description":"create a configuration for many to one relationship property"
-	},
-	"Simple-Interface":{
-		"prefix":"Simple-Interface",
-		"body":[
-			"using Core.Entities;",
-			"\nnamespace Core.Interfaces;",
-			"public interface I${1:Entity}Repository: IGenericRepositoryWith${2|Int,String|}Id<${1:Entity}>{}"
-		],
-		"description":"Create a simple interfaz"
-	},
-	"Simple-Repository":{
-		"prefix":"Simple-Repository",
-		"body":[
-			"using Core.Entities;",
-			"using Core.Interfaces;",
-			"using Infrastructure.Data;",
-			"using Microsoft.EntityFrameworkCore;",
-			"namespace Infrastructure.Repositories;\n",
-			"public sealed class ${1:Entity}Repository : GenericRepositoryWith${2|Int,String|}Id<${1:Entity}>, I${1:Entity}Repository{\n",
-			"\toverride protected DbSet<${1:Entity}> Entity { get; }\n",
-			"\tpublic ${1:Entity}Repository(ApiContext context){\n",
-			"\t\tEntity = context.Set<${1:Entity}>();\n",
-			"\t}\n",
-			"}"
-		],
-		"description":"Create a simple Repository"
-	},
-	"UnitOfWork-Repository-property":{
-		"prefix":"prop-UnitOfWork-Repository",
-		"body":[
-			"public I${1:Property}Repository ${2:PluralProperty} => _${1:Property} ??= _${1:Property} = new ${1:Property}Repository(_Context);"
-		],
-		"description":"Create a new simpleton for UnitOfWork"
-	},
-	"DtoWithId":{		
-		"prefix":"simple-dto-with-id",
-		"body":[
-			"using System.ComponentModel.DataAnnotations;",
-			"namespace Api.Dtos;",
-			"public class ${1:entity}DtosWithId: ${1:entity}Dto{",
-			"\t[Required]",			
-			"\tpublic ${2|int,string|} Id { get; set; } ${3| , = String.Empty |}",
-			"}"
-		],
-		"description":"Create a simple structure of dto with id"
-	},
-	"Simple-Dto":{
-		"prefix":"simple-dto",
-		"body":[
-			"namespace Api.Dtos;",
-			"public class ${1:Entity}Dto{",
-			"\t$0",
-			"}"
-		],
-		"description":"Create A simple Dto structure"
-	}
+	// },	
+		// Place your snippets for csharp here. Each snippet is defined under a snippet name and has a prefix, body and 
+		// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+		// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+		// same ids are connected.
+		// Example:
+		// "Print to console": {
+		// 	"prefix": "log",
+		// 	"body": [
+		// 		"console.log('$1');",
+		// 		"$2"
+		// 	],
+		// 	"description": "Log output to console"
+		// }
+	
+		"Controller-Structure":{
+			"prefix": "controller-structure",
+			"body":[				
+				"using AutoMapper;",
+				"using Microsoft.AspNetCore.Mvc;",
+				"using Microsoft.AspNetCore.Authorization;",
+				"using Models.Dtos;",
+				"using Core.Interfaces;",
+				"using Api.Helpers;",
+				"using Core.Entities;",
+				"\nnamespace Api.Controllers;",
+				"[ApiVersion(\"1.0\")]",
+				"[ApiVersion(\"1.1\")]",
+				"public class ${1:Entity}Controller : BaseApiController{",
+				"\tprivate readonly IUnitOfWork _UnitOfWork;",
+				"\tprivate readonly IMapper _Mapper;",
+				"\tprivate readonly ILogger<${1:Entity}Controller> _Logger;\n",			
+				"\tpublic ${1:Entity}Controller (",
+				"\t\tIUnitOfWork unitOfWork,",
+				"\t\tIMapper mapper,",
+				"\t\tILogger<${1:Entity}Controller> logger",
+				"\t){",
+				"\t\t_UnitOfWork = unitOfWork;",
+				"\t\t_Mapper = mapper;",
+				"\t\t_Logger = logger;",
+				"\t}\n",			
+				"\t[HttpGet]",			
+				"\t[MapToApiVersion(\"1.0\")]",			
+				"\t[ProducesResponseType(StatusCodes.Status200OK)]",
+				"\t[ProducesResponseType(StatusCodes.Status204NoContent)]",
+				"\t[ProducesResponseType(StatusCodes.Status400BadRequest)]",
+				"\t[ProducesResponseType(StatusCodes.Status404NotFound)]",
+				"\tpublic async Task<ActionResult> Get(){",	
+				"\t\ttry{",
+				"\t\t\tvar records = await _UnitOfWork.${2:Entities}.GetAllAsync();",
+				"\t\t\tif (records == null){return NotFound();}",
+				"\t\t\tif (!records.Any()){return NoContent();}",
+				"\t\t\treturn Ok(_Mapper.Map<List<${1:Entity}Dto>>(records));",
+				"\t\t}catch (Exception ex){",
+				"\t\t\t_Logger.LogError(ex.Message);",
+				"\t\t\treturn StatusCode(500,\"Some Wrong\");",
+				"\t\t}",
+				"\t}\n",			
+				"\t[HttpGet(\"{id}\")]",			
+				"\t[MapToApiVersion(\"1.0\")]",
+				"\t[ProducesResponseType(StatusCodes.Status200OK)]",
+				"\t[ProducesResponseType(StatusCodes.Status400BadRequest)]",
+				"\t[ProducesResponseType(StatusCodes.Status404NotFound)]",
+				"\tpublic async Task<ActionResult> Get(${4|int,string|} id){",
+				"\t\ttry{",
+				"\t\t\tvar record = await _UnitOfWork.${2:Entities}.GetByIdAsync(id);",
+				"\t\t\tif (record == null){return NotFound();}",
+				"\t\t\treturn Ok(_Mapper.Map<${1:Entity}Dto>(record));",
+				"\t\t}catch (Exception ex){",
+				"\t\t\t_Logger.LogError(ex.Message);",
+				"\t\t\treturn StatusCode(500,\"Some Wrong\");",
+				"\t\t}",
+				"\t}\n",
+				"\t[HttpGet]",
+				"\t[MapToApiVersion(\"1.1\")]",
+				"\t[Authorize]",
+				"\t[ProducesResponseType(StatusCodes.Status200OK)]",
+				"\t[ProducesResponseType(StatusCodes.Status204NoContent)]",
+				"\t[ProducesResponseType(StatusCodes.Status400BadRequest)]",
+				"\t[ProducesResponseType(StatusCodes.Status401Unauthorized)]",
+				"\t[ProducesResponseType(StatusCodes.Status404NotFound)]",
+				"\tpublic async Task<ActionResult> Get11([FromQuery] Params conf){",
+				"\t\ttry{",
+				"\t\t\tvar param = new Param(conf);",
+				"\t\t\tvar records = await _UnitOfWork.${2:Entities}.GetAllAsync(param);",
+				"\t\t\tif (records == null){return NotFound();}",
+				"\t\t\tif (!records.Any()){return NoContent();}",
+				"\t\t\tvar recordDtos = _Mapper.Map<List<${1:Entity}Dto>>(records);",
+				"\t\t\tIPager<${1:Entity}Dto> pager = new Pager<${1:Entity}Dto>(recordDtos,records?.Count(),param) ;",
+				"\t\t\treturn Ok(pager);",
+				"\t\t}catch (Exception ex){",
+				"\t\t\t_Logger.LogError(ex.Message);",
+				"\t\t\treturn StatusCode(500,\"Some Wrong\");",
+				"\t\t}",
+				"\t}\n",
+				"\t[HttpPost]",
+				"\t[Authorize]",
+				"\t[ProducesResponseType(StatusCodes.Status201Created)]",
+				"\t[ProducesResponseType(StatusCodes.Status400BadRequest)]",
+				"\t[ProducesResponseType(StatusCodes.Status409Conflict)]",
+				"\tpublic async Task<ActionResult> Post(${1:Entity}Dto recordDto){",
+				"\t\ttry{",
+				"\t\t\tif(recordDto == null){return BadRequest();}",
+				"\t\t\tif(await _UnitOfWork.Products.ItAlreadyExists(recordDto)){",
+				"\t\t\t\treturn Conflict(\"ya se encuentra registrado\");",
+				"\t\t\t}",
+				"\t\t\tvar record = _Mapper.Map<${1:Entity}>(recordDto);",
+				"\t\t\t_UnitOfWork.${2:Entities}.Add(record);",
+				"\t\t\tawait _UnitOfWork.SaveAsync();",
+				"\t\t\treturn Created(nameof(Post),new {id= record.Id, recordDto});",
+				"\t\t}catch (Exception ex){",
+				"\t\t\t_Logger.LogError(ex.Message);",
+				"\t\t\treturn StatusCode(500,\"Some Wrong\");",
+				"\t\t}\n",								
+				"\t}\n",								
+				"\t[HttpPut(\"{id}\")]",
+				"\t[Authorize(Roles = \"Administrator,Manager\")]",
+				"\t[MapToApiVersion(\"1.0\")]",
+				"\t[ProducesResponseType(StatusCodes.Status204NoContent)]",
+				"\t[ProducesResponseType(StatusCodes.Status304NotModified)]",
+				"\t[ProducesResponseType(StatusCodes.Status400BadRequest)]",
+				"\t[ProducesResponseType(StatusCodes.Status404NotFound)]",
+				"\t[ProducesResponseType(StatusCodes.Status409Conflict)]",
+				"\tpublic async Task<ActionResult<${1:Entity}Dto>> Put(${4|int,string|} id, [FromBody]${1:Entity}Dto? recordDto){",
+				"\t\ttry{",
+				"\t\t\tif(recordDto == null){return BadRequest();}",
+				"\t\t\tif(await _UnitOfWork.Products.ItAlreadyExists(recordDto)){",
+				"\t\t\t\treturn Conflict(\"ya se encuentra registrado\");",
+				"\t\t\t}",
+				"\t\t\tif(await _UnitOfWork.Products.HasChanged(recordDto)){",
+				"\t\t\t\treturn Conflict(\"No ha cambiado\");",
+				"\t\t\t}",
+				"\t\t\tvar record = _Mapper.Map<${1:Entity}>(recordDto);",
+				"\t\t\trecord.Id = id;",
+				"\t\t\t_UnitOfWork.${2:Entities}.Update(record);",
+				"\t\t\tawait _UnitOfWork.SaveAsync();",
+				"\t\t\treturn NoContent();",
+				"\t\t}catch (Exception ex){",
+				"\t\t\t_Logger.LogError(ex.Message);",
+				"\t\t\treturn StatusCode(500,\"Some Wrong\");",
+				"\t\t}\n",
+				"\t}\n",
+				"\t[HttpDelete(\"{id}\")]",
+				"\t[Authorize(Roles = \"Administrator\")]",
+				"\t[MapToApiVersion(\"1.0\")]",
+				"\t[ProducesResponseType(StatusCodes.Status204NoContent)]",
+				"\t[ProducesResponseType(StatusCodes.Status404NotFound)]",				
+				"\tpublic async Task<IActionResult> Delete(${4|int,string|} id){",
+				"\t\ttry{",
+				"\t\t\tvar record = await _UnitOfWork.${2:Entities}.GetByIdAsync(id);",
+				"\t\t\tif(record == null){return NotFound();}",
+				"\t\t\t_UnitOfWork.${2:Entities}.Remove(record);",
+				"\t\t\tawait _UnitOfWork.SaveAsync();",
+				"\t\t\treturn NoContent();",
+				"\t\t}catch (Exception ex){",
+				"\t\t\t_Logger.LogError(ex.Message);",
+				"\t\t\treturn StatusCode(500,\"Some Wrong\");",
+				"\t\t}\n",								
+				"\t}\n",								
+				"}"
+			],
+			"description": "create the basic structure to create a controller"
+		},
+		"Auto-Increment-Configuration-Property":{
+			"prefix":"conf-prop-auto-increment",
+			"body":[
+				"builder.Property(x => x.Id)",
+				"\t.IsRequired()",
+				"\t.HasAnnotation(\"MySql:ValueGenerationStrategy\", MySqlValueGenerationStrategy.IdentityColumn)",
+				"\t.HasColumnName(\"idPk\");\n",
+				"$0"
+			],
+			"description":"Create a autoincrement configuration property"
+		},
+		"many-to-many-property-configuration":{
+			"prefix":"conf-prop-many-to-many",
+			"body":[
+				"builder.HasMany(p => p.${1:PluralProperyA})",
+				"\t.WithMany(p => p.${2:PluralProperyB})",
+				"\t.UsingEntity<${3:PropertyC}>(",
+				"\t\tt => t.HasOne(j => j.${4:PropertyA})",
+				"\t\t\t.WithMany(j => j.${3:PropertyC})",
+				"\t\t\t.HasForeignKey(j => j.${4:PropertyA}Id),",
+				"\t\tt => t.HasOne(j => j.${5:PropertyB})",
+				"\t\t\t.WithMany(j => j.${3:PropertyC})",
+				"\t\t\t.HasForeignKey(j => j.${5:PropertyB}Id),",
+				"\t\tt => {//--Configurations",
+				"\t\t\tt.ToTable(\"${6:TableName}\");",
+				"\t\t\tt.HasKey(j => new{j.${4:PropertyA}Id,j.${5:PropertyB}Id});",
+				"\n\t\t\t$0",
+				"\t\t}",
+				"\t);"
+			],
+			"description":"Create configure many to many relationship properties"
+		},
+		"maxlength-configuration-property":{
+			"prefix":"conf-prop-maxlength",
+			"body":[
+				"builder.Property(x => x.${1:property})",
+				"\t.IsRequired()",
+				"\t.HasColumnName(\"${2:propertyName}${3:Table}\")",
+				"\t.HasMaxLength(${4|50,100,200,250|});\n",
+				"$0"
+			],
+			"description":"create a configuration property with max lenght"
+		},
+		"UniqueIndex-configuration-property":{
+			"prefix":"conf-prop-uniqueIndex",
+			"body":[
+				"builder.HasIndex(p => new{",
+				"\tp.${1:property1},p.${2:property2}",
+				"})",
+				".HasDatabaseName(\"IX_${1:property1}_${2:property2}\")",
+				".IsUnique();\n",
+				"$0"
+			],
+			"description":"Create a unique index"
+		},
+		"Simple-Configuration":{
+			"prefix":"simple-conf",
+			"body":[
+				"using Core.Entities;",
+				"using Microsoft.EntityFrameworkCore;",
+				"using Microsoft.EntityFrameworkCore.Metadata.Builders;",
+				"\nnamespace Persistence.Data.Configurations;",
+				"public class ${1:Entity}Configuration : IEntityTypeConfiguration<${1:Entity}>{",
+				"\tpublic void Configure(EntityTypeBuilder<${1:Entity}> builder){",
+				"\t\tbuilder.ToTable(\"${2:TableName}\");",
+				"\t\tbuilder.HasKey(x => x.Id);",
+				"\t\t$0",
+				"\t}",
+				"}"
+			],
+			"description":"Create a simple Configuration"
+		},
+		"Many-To-Many-Entity":{
+			"prefix":"Many-To-Many-Entity",
+			"body":[
+				"namespace Domain.Entities;",
+				"public class ${1:Entity}${3:PluralEntityB}{",
+				"\tpublic int ${2:EntityB}Id { get; set; }",
+				"\tpublic ${2:EntityB}? ${2:EntityB} { get; set; }",
+				"",
+				"\tpublic int ${1:Entity}Id { get; set; }",
+				"\tpublic ${1:Entity}? ${1:Entity} { get; set; }",
+				"}"
+			],
+			"description":"Create many to many relationship."
+		},
+		"Mapping-Class":{
+			"prefix": "Mapping-Class",
+			"body": [
+				"using Api.Dtos;",
+				"using AutoMapper;",
+				"using Domain.Entities;",
+				"namespace Api.Profiles;",
+				"public class Mapping${1:Entity}Profile: Profile{",
+				"   public Mapping${1:Entity}Profile(){",
+				"       CreateMap<${2:EntityDto},${1:Entity}>()",
+				"           .ReverseMap();",
+				"    }",
+				"}"
+			],
+			"description": "this snipper will create a new basic profile class"
+		},
+		"Dbset-property":{
+			"prefix":"prop-DbSet",
+			"body":[
+				"public DbSet<${1:Entity}> ${2:PluralEntity} { get; set; }"
+			],
+			"description":"Create a DbSet property"
+		},
+		"Empty-String-Property":{
+			"prefix":"prop-empty-string",
+			"body":[
+				"public string ${1:property} { get; set; } = String.Empty;"
+			],
+			"description":"Create a string.Empty prop"
+		},
+		"Many-To-Many-Property":{
+			"prefix":"prop-many-to-many",
+			"body":[
+				"public IEnumerable<${1:EntityA}> ${3:PluralEntityA} { get; set; } = new HashSet<${1:EntityA}>();",
+				"public IEnumerable<${2:EntityC}> ${4:PluralEntityC} { get; set; } = new HashSet<${2:EntityC}>();"
+			],
+			"description":"Create many to many relationship property"
+		},
+		"One-To-Many-Property":{
+			"prefix":"prop-one-to-many",
+			"body":[
+				"public ${1|int,string|} ${2:property}Id { get; set; }",
+				"public ${2:property} ${2:property} { get; set; } = null!;"
+			],
+			"description":"Create One to many property"
+		},
+		"Simple-Entity":{
+			"prefix":"Simple-Entity",
+			"body":[
+				"namespace Core.Entities;\n",
+				"public class ${1:entity}: BaseEntityWith${2|Int,String|}Id{",
+				"\t${0}",
+				"}"
+			],
+			"description":"Create Simple Entity"
+		},
+		"many-To-One-property":{
+			"prefix":"prop-many-to-one",
+			"body":[
+				"public ICollection<${1:EntityA}> ${3:PluralEntityA} { get; set; } = new HashSet<${1:EntityA}>();"
+			],
+			"description":"create a one to many relationship property"
+		},
+		"many-to-one-configuration-property":{
+			"prefix":"conf-prop-one-to-many",
+			"body":[
+				"builder.HasOne(x => x.${1:propertyA})",
+				"\t.WithMany(x => x.${2:propertyB})",
+				"\t.HasForeignKey(x => x.${1:propertyA}Id);",
+				"\n$0"
+			],
+			"description":"create a configuration for many to one relationship property"
+		},
+		"Simple-Interface":{
+			"prefix":"Simple-Interface",
+			"body":[
+				"using Core.Entities;",
+				"\nnamespace Core.Interfaces;",
+				"public interface I${1:Entity}Repository: IGenericRepositoryWith${2|Int,String|}Id<${1:Entity}>{}"
+			],
+			"description":"Create a simple interfaz"
+		},
+		"Simple-Repository":{
+			"prefix":"Simple-Repository",
+			"body":[
+				"using Core.Entities;",
+				"using Core.Interfaces;",
+				"using Infrastructure.Data;",
+				"using Microsoft.EntityFrameworkCore;",
+				"namespace Infrastructure.Repositories;\n",
+				"public sealed class ${1:Entity}Repository : GenericRepositoryWith${2|Int,String|}Id<${1:Entity}>, I${1:Entity}Repository{\n",
+				"\toverride protected DbSet<${1:Entity}> Entity { get; }\n",
+				"\tpublic ${1:Entity}Repository(ApiContext context){\n",
+				"\t\tEntity = context.Set<${1:Entity}>();\n",
+				"\t}\n",
+				"}"
+			],
+			"description":"Create a simple Repository"
+		},
+		"UnitOfWork-Repository-property":{
+			"prefix":"prop-UnitOfWork-Repository",
+			"body":[
+				"public I${1:Property}Repository ${2:PluralProperty} => _${1:Property} ??= _${1:Property} = new ${1:Property}Repository(_Context);"
+			],
+			"description":"Create a new simpleton for UnitOfWork"
+		},
+		"DtoWithId":{		
+			"prefix":"simple-dto-with-id",
+			"body":[
+				"using System.ComponentModel.DataAnnotations;",
+				"namespace Api.Dtos;",
+				"public class ${1:entity}DtosWithId: ${1:entity}Dto{",
+				"\t[Required]",			
+				"\tpublic ${2|int,string|} Id { get; set; } ${3| , = String.Empty |}",
+				"}"
+			],
+			"description":"Create a simple structure of dto with id"
+		},
+		"Simple-Dto":{
+			"prefix":"simple-dto",
+			"body":[
+				"namespace Api.Dtos;",
+				"public class ${1:Entity}Dto{",
+				"\t$0",
+				"}"
+			],
+			"description":"Create A simple Dto structure"
+		}
+	
 }

@@ -1,7 +1,10 @@
+using System.Reflection;
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
+using Models.Dtos;
 namespace Infrastructure.Repositories;
 
 public sealed class ProductCategoryRepository : GenericRepositoryWithIntId<ProductCategory>, IProductCategoryRepository{
@@ -14,4 +17,7 @@ public sealed class ProductCategoryRepository : GenericRepositoryWithIntId<Produ
 
     }
 
+    public bool ItAlreadyExists(ProductCategoryDto recordDto){
+        return  Entity.Any(x => x.Name == recordDto.Name.Trim().ToLower());
+    }
 }
