@@ -245,16 +245,14 @@
 		"prefix":"prop-one-to-many",
 		"body":[
 			"public ${1|int,string|} ${2:property}Id { get; set; }",
-			"public ${2:property}? ${2:property} {get;set;}"
+			"public ${2:property} ${2:property} { get; set; } = null!;"
 		],
 		"description":"Create One to many property"
 	},
 	"Simple-Entity":{
 		"prefix":"Simple-Entity",
 		"body":[
-			"using Domain.Entities.Generics;",
-			"",
-			"namespace Domain.Entities;",
+			"namespace Core.Entities;\n",
 			"public class ${1:entity}: BaseEntityWith${2|Int,String|}Id{",
 			"\t${0}",
 			"}"
@@ -264,12 +262,12 @@
 	"many-To-One-property":{
 		"prefix":"prop-many-to-one",
 		"body":[
-			"public IEnumerable<${1:EntityA}> ${3:PluralEntityA} { get; set; } = new HashSet<${1:EntityA}>();",
+			"public ICollection<${1:EntityA}> ${3:PluralEntityA} { get; set; } = new HashSet<${1:EntityA}>();",
 		],
 		"description":"create a one to many relationship property"
 	},
 	"many-to-one-configuration-property":{
-		"prefix":"conf-prop-many-to-one",
+		"prefix":"conf-prop-one-to-many",
 		"body":[
 			"builder.HasOne(x => x.${1:propertyA})",
 			"\t.WithMany(x => x.${2:propertyB})",
@@ -281,23 +279,25 @@
 	"Simple-Interface":{
 		"prefix":"Simple-Interface",
 		"body":[
-			"using Domain.Entities;",
-			"using Domain.Interfaces.Generics.GenericById;",
-			"\nnamespace Domain.Interfaces;",
-			"public interface I${1:Entity}Repository: IGenericRepository${2|Int,String|}Id<${1:Entity}>{}"
+			"using Core.Entities;",
+			"\nnamespace Core.Interfaces;",
+			"public interface I${1:Entity}Repository: IGenericRepositoryWith${2|Int,String|}Id<${1:Entity}>{}"
 		],
 		"description":"Create a simple interfaz"
 	},
 	"Simple-Repository":{
 		"prefix":"Simple-Repository",
 		"body":[
-			"using Application.Repositories.Generics.GenericById;",
-			"using Domain.Entities;",
-			"using Domain.Interfaces;",
-			"using Persistence;",
-			"\nnamespace Application.Repositories;",
-			"public sealed class ${1:Entity}Repository : GenericRepository${2|Int,String|}Id<${1:Entity}>, I${1:Entity}Repository{",
-			"\tpublic ${1:Entity}Repository(DataContext context) : base(context){}",
+			"using Core.Entities;",
+			"using Core.Interfaces;",
+			"using Infrastructure.Data;",
+			"using Microsoft.EntityFrameworkCore;",
+			"namespace Infrastructure.Repositories;\n",
+			"public sealed class ${1:Entity}Repository : GenericRepositoryWith${2|Int,String|}Id<${1:Entity}>, I${1:Entity}Repository{\n",
+			"\toverride protected DbSet<${1:Entity}> Entity { get; }\n",
+			"\tpublic ${1:Entity}Repository(ApiContext context){\n",
+			"\t\tEntity = context.Set<${1:Entity}>();\n",
+			"\t}\n",
 			"}"
 		],
 		"description":"Create a simple Repository"
