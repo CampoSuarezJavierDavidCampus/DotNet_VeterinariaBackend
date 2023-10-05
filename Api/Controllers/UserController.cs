@@ -5,6 +5,7 @@ using Models.Dtos;
 using Core.Interfaces;
 using Api.Helpers;
 using Core.Entities;
+using Api.Extensions;
 
 namespace Api.Controllers;
 [ApiVersion("1.0")]
@@ -69,12 +70,11 @@ public class UserController : BaseApiController{
     public async Task<ActionResult> Get11([FromQuery] Params conf){
         try{
             var param = new Param(conf);
-            var records = await _UnitOfWork.Users.GetAllAsync(param);
+            var records = await _UnitOfWork.Users.GetAllAsync();
             if (records == null){return NotFound();}
             if (!records.Any()){return NoContent();}
-            var recordDtos = _Mapper.Map<List<UserDto>>(records);
-            IPager<UserDto> pager = new Pager<UserDto>(recordDtos,records?.Count(),param) ;
-            return Ok(pager);
+            var recordDto = records.GetPaged<UserDto,User>(_Mapper,param);
+            return Ok(recordDto);
         }catch (Exception ex){
             _Logger.LogError(ex.Message);
             return StatusCode(500,"Some Wrong");

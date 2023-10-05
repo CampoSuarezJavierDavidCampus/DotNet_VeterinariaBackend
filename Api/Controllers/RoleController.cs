@@ -5,6 +5,7 @@ using Models.Dtos;
 using Core.Interfaces;
 using Api.Helpers;
 using Core.Entities;
+using Api.Extensions;
 
 namespace Api.Controllers;
 [ApiVersion("1.0")]
@@ -69,12 +70,11 @@ public class RoleController : BaseApiController{
     public async Task<ActionResult> Get11([FromQuery] Params conf){
         try{
             var param = new Param(conf);
-            var records = await _UnitOfWork.Roles.GetAllAsync(param);
+            var records = await _UnitOfWork.Roles.GetAllAsync();
             if (records == null){return NotFound();}
             if (!records.Any()){return NoContent();}
-            var recordDtos = _Mapper.Map<List<RoleDto>>(records);
-            IPager<RoleDto> pager = new Pager<RoleDto>(recordDtos,records?.Count(),param) ;
-            return Ok(pager);
+            var recordDto = records.GetPaged<RoleDto,Role>(_Mapper,param);
+            return Ok(recordDto);
         }catch (Exception ex){
             _Logger.LogError(ex.Message);
             return StatusCode(500,"Some Wrong");
