@@ -4,18 +4,21 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+//* Add services to the container.
+builder.Services.AddControllers();
+builder.Services.AddControllers();
 
-builder.Services.AddControllers();
-builder.Services.AddControllers();
-//ApiServices
+//*Api Extensions
 builder.Services.AddApiServices();
+builder.Services.ConfigureRateLimiting();
+builder.Services.ConfigureVersioning();
+builder.Services.ConfigureCors();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//Configura context
+//*DbContext Configuration
 builder.Services.AddDbContext<ApiContext>(opts =>{
     string connection = builder.Configuration.GetConnectionString("ConnectionWindows") ?? throw new Exception("Fatal Error: cannot connect to database");
 
@@ -34,6 +37,11 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+
+//*Api Extensions
+app.UseRateLimiter();
+app.UseCors("CorsPolicy");
+app.UseApiVersioning();
 
 app.MapControllers();
 
