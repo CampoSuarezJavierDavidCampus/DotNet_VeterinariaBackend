@@ -10,5 +10,5 @@ public class Product: BaseEntityWithIntId{
     public ProductCategory ProductCategory { get; set; } = null!;
 
     public ICollection<CartItem> CartItems { get; set; } = new HashSet<CartItem>();
-    public ICollection<Cart> Carts { get; set; } = new HashSet<Cart>();
+    public ICollection<User> Users { get; set; } = new HashSet<User>();
 }
