@@ -26,8 +26,8 @@
 		// 	"description": "Log output to console"
 		// }
 	
-		"Controller-Structure":{
-			"prefix": "controller-structure",
+		"Simple-Controller":{
+			"prefix": "simple-controller",
 			"body":[				
 				"using AutoMapper;",
 				"using Microsoft.AspNetCore.Mvc;",
@@ -114,7 +114,7 @@
 				"\tpublic async Task<ActionResult> Post(${1:Entity}Dto recordDto){",
 				"\t\ttry{",
 				"\t\t\tif(recordDto == null){return BadRequest();}",
-				"\t\t\tif(await _UnitOfWork.Products.ItAlreadyExists(recordDto)){",
+				"\t\t\tif(_UnitOfWork.${2:Entities}.ItAlreadyExists(recordDto)){",
 				"\t\t\t\treturn Conflict(\"ya se encuentra registrado\");",
 				"\t\t\t}",
 				"\t\t\tvar record = _Mapper.Map<${1:Entity}>(recordDto);",
@@ -137,12 +137,9 @@
 				"\tpublic async Task<ActionResult<${1:Entity}Dto>> Put(${4|int,string|} id, [FromBody]${1:Entity}Dto? recordDto){",
 				"\t\ttry{",
 				"\t\t\tif(recordDto == null){return BadRequest();}",
-				"\t\t\tif(await _UnitOfWork.Products.ItAlreadyExists(recordDto)){",
+				"\t\t\tif(_UnitOfWork.${2:Entities}.ItAlreadyExists(recordDto)){",
 				"\t\t\t\treturn Conflict(\"ya se encuentra registrado\");",
-				"\t\t\t}",
-				"\t\t\tif(await _UnitOfWork.Products.HasChanged(recordDto)){",
-				"\t\t\t\treturn Conflict(\"No ha cambiado\");",
-				"\t\t\t}",
+				"\t\t\t}",				
 				"\t\t\tvar record = _Mapper.Map<${1:Entity}>(recordDto);",
 				"\t\t\trecord.Id = id;",
 				"\t\t\t_UnitOfWork.${2:Entities}.Update(record);",
@@ -337,8 +334,11 @@
 			"prefix":"Simple-Interface",
 			"body":[
 				"using Core.Entities;",
+				"using Models.Dtos;",
 				"\nnamespace Core.Interfaces;",
-				"public interface I${1:Entity}Repository: IGenericRepositoryWith${2|Int,String|}Id<${1:Entity}>{}"
+				"public interface I${1:Entity}Repository: IGenericRepositoryWith${2|Int,String|}Id<${1:Entity}>{",
+				"\tbool ItAlreadyExists(${1:Entity}Dto recordDto);    "
+				"}"
 			],
 			"description":"Create a simple interfaz"
 		},
@@ -348,6 +348,7 @@
 				"using Core.Entities;",
 				"using Core.Interfaces;",
 				"using Infrastructure.Data;",
+				"using Models.Dtos;",
 				"using Microsoft.EntityFrameworkCore;",
 				"namespace Infrastructure.Repositories;\n",
 				"public sealed class ${1:Entity}Repository : GenericRepositoryWith${2|Int,String|}Id<${1:Entity}>, I${1:Entity}Repository{\n",
@@ -355,6 +356,9 @@
 				"\tpublic ${1:Entity}Repository(ApiContext context){\n",
 				"\t\tEntity = context.Set<${1:Entity}>();\n",
 				"\t}\n",
+				"\tpublic bool ItAlreadyExists(${1:Entity}Dto recordDto){",
+				"\t\treturn Entity.Any(x => x.${3:Property} == recordDto.${3:Property});",
+				"\t}",
 				"}"
 			],
 			"description":"Create a simple Repository"
@@ -370,7 +374,7 @@
 			"prefix":"simple-dto-with-id",
 			"body":[
 				"using System.ComponentModel.DataAnnotations;",
-				"namespace Api.Dtos;",
+				"namespace Models.Dtos;",
 				"public class ${1:entity}DtosWithId: ${1:entity}Dto{",
 				"\t[Required]",			
 				"\tpublic ${2|int,string|} Id { get; set; } ${3| , = String.Empty |}",

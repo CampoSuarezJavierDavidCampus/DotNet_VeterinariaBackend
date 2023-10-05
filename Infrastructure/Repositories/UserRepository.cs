@@ -1,6 +1,7 @@
 using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
+using Models.Dtos;
 using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Repositories;
 
@@ -14,4 +15,7 @@ public sealed class UserRepository : GenericRepositoryWithStringId<User>, IUserR
 
     }
 
+    public bool ItAlreadyExists(UserDto recordDto){
+        return Entity.Any(x => x.UserName == recordDto.UserName);
+    }
 }

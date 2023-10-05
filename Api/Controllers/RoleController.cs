@@ -9,15 +9,15 @@ using Core.Entities;
 namespace Api.Controllers;
 [ApiVersion("1.0")]
 [ApiVersion("1.1")]
-public class ProductCategoryController : BaseApiController{
+public class RoleController : BaseApiController{
     private readonly IUnitOfWork _UnitOfWork;
     private readonly IMapper _Mapper;
-    private readonly ILogger<ProductCategoryController> _Logger;
+    private readonly ILogger<RoleController> _Logger;
 
-    public ProductCategoryController (
+    public RoleController (
         IUnitOfWork unitOfWork,
         IMapper mapper,
-        ILogger<ProductCategoryController> logger
+        ILogger<RoleController> logger
     ){
         _UnitOfWork = unitOfWork;
         _Mapper = mapper;
@@ -32,10 +32,10 @@ public class ProductCategoryController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(){
         try{
-            var records = await _UnitOfWork.ProductCategories.GetAllAsync();
+            var records = await _UnitOfWork.Roles.GetAllAsync();
             if (records == null){return NotFound();}
             if (!records.Any()){return NoContent();}
-            return Ok(_Mapper.Map<List<ProductCategoryDto>>(records));
+            return Ok(_Mapper.Map<List<RoleDto>>(records));
         }catch (Exception ex){
             _Logger.LogError(ex.Message);
             return StatusCode(500,"Some Wrong");
@@ -49,9 +49,9 @@ public class ProductCategoryController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(int id){
         try{
-            var record = await _UnitOfWork.ProductCategories.GetByIdAsync(id);
+            var record = await _UnitOfWork.Roles.GetByIdAsync(id);
             if (record == null){return NotFound();}
-            return Ok(_Mapper.Map<ProductCategoryDto>(record));
+            return Ok(_Mapper.Map<RoleDto>(record));
         }catch (Exception ex){
             _Logger.LogError(ex.Message);
             return StatusCode(500,"Some Wrong");
@@ -69,11 +69,11 @@ public class ProductCategoryController : BaseApiController{
     public async Task<ActionResult> Get11([FromQuery] Params conf){
         try{
             var param = new Param(conf);
-            var records = await _UnitOfWork.ProductCategories.GetAllAsync(param);
+            var records = await _UnitOfWork.Roles.GetAllAsync(param);
             if (records == null){return NotFound();}
             if (!records.Any()){return NoContent();}
-            var recordDtos = _Mapper.Map<List<ProductCategoryDto>>(records);
-            IPager<ProductCategoryDto> pager = new Pager<ProductCategoryDto>(recordDtos,records?.Count(),param) ;
+            var recordDtos = _Mapper.Map<List<RoleDto>>(records);
+            IPager<RoleDto> pager = new Pager<RoleDto>(recordDtos,records?.Count(),param) ;
             return Ok(pager);
         }catch (Exception ex){
             _Logger.LogError(ex.Message);
@@ -86,14 +86,14 @@ public class ProductCategoryController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult> Post(ProductCategoryDto recordDto){
+    public async Task<ActionResult> Post(RoleDto recordDto){
         try{
             if(recordDto == null){return BadRequest();}
-            if(_UnitOfWork.ProductCategories.ItAlreadyExists(recordDto)){
+            if(_UnitOfWork.Roles.ItAlreadyExists(recordDto)){
                 return Conflict("ya se encuentra registrado");
             }
-            var record = _Mapper.Map<ProductCategory>(recordDto);
-            _UnitOfWork.ProductCategories.Add(record);
+            var record = _Mapper.Map<Role>(recordDto);
+            _UnitOfWork.Roles.Add(record);
             await _UnitOfWork.SaveAsync();
             return Created(nameof(Post),new {id= record.Id, recordDto});
         }catch (Exception ex){
@@ -111,15 +111,15 @@ public class ProductCategoryController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<ProductCategoryDto>> Put(int id, [FromBody]ProductCategoryDto? recordDto){
+    public async Task<ActionResult<RoleDto>> Put(int id, [FromBody]RoleDto? recordDto){
         try{
             if(recordDto == null){return BadRequest();}
-            if(_UnitOfWork.ProductCategories.ItAlreadyExists(recordDto)){
+            if(_UnitOfWork.Roles.ItAlreadyExists(recordDto)){
                 return Conflict("ya se encuentra registrado");
             }
-            var record = _Mapper.Map<ProductCategory>(recordDto);
+            var record = _Mapper.Map<Role>(recordDto);
             record.Id = id;
-            _UnitOfWork.ProductCategories.Update(record);
+            _UnitOfWork.Roles.Update(record);
             await _UnitOfWork.SaveAsync();
             return NoContent();
         }catch (Exception ex){
@@ -136,9 +136,9 @@ public class ProductCategoryController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id){
         try{
-            var record = await _UnitOfWork.ProductCategories.GetByIdAsync(id);
+            var record = await _UnitOfWork.Roles.GetByIdAsync(id);
             if(record == null){return NotFound();}
-            _UnitOfWork.ProductCategories.Remove(record);
+            _UnitOfWork.Roles.Remove(record);
             await _UnitOfWork.SaveAsync();
             return NoContent();
         }catch (Exception ex){
