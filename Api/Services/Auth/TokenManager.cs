@@ -35,7 +35,7 @@ public sealed class TokenManager : ITokenManager{
         //-Crear Usuario
         User user = new(){
             Email = model.Email!,
-            Username = model.Username!
+            UserName = model.Username!
         };
 
         //-Encriptar Password
@@ -61,10 +61,13 @@ public sealed class TokenManager : ITokenManager{
         //-Define Claims
         var claims = new List<Claim>(){
             new(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
-            new(ClaimTypes.Name,user.Username),
-            new(ClaimTypes.Email,user.Email!),
-            new(ClaimTypes.Role,user.Role!.Description)
+            new(ClaimTypes.Name,user.UserName),
+            new(ClaimTypes.Email,user.Email!),            
         };        
+
+        foreach (var role in user.Roles){
+            claims.Add(new Claim(ClaimTypes.Role,role.Name));
+        }
 
         var date = new DateTime();
         date = DateTime.Now.AddMinutes(_AccessTokenDuration);
