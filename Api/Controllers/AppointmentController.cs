@@ -81,6 +81,26 @@ public class AppointmentController : BaseApiController{
         }
     }
 
+    //*Listar las mascotas que fueron atendidas por motivo de vacunacion en el primer trimestre del 2023
+    [HttpGet("PetsCaredForByDateAndReason")]
+    [MapToApiVersion("1.0")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> PetsCaredForByDateAndReason([FromBody] ReasonAndDateDto data){
+        try{
+            var records = await _UnitOfWork.Appointments.PetsCaredForByDateAndReason(data);
+            if (records == null){return NotFound();}
+            if (!records.Any()){return NoContent();}
+            return Ok(records);
+        }catch (Exception ex){
+            _Logger.LogError(ex.Message);
+            return StatusCode(500,"Some Wrong");
+        }
+    }
+    
+
     [HttpPost]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
