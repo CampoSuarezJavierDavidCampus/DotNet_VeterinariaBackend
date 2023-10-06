@@ -4,11 +4,12 @@ using Core.Models.Dtos;
 
 namespace Api.Profiles;
 public class MappingProfiles: Profile{
-    public MappingProfiles(){        
+    public MappingProfiles(){        /* OwnerWithPets */
+        CreateMap<Owner,OwnerWithPets>().ReverseMap();
         CreateMap<Appointment,AppointmentDto>().ReverseMap();
         CreateMap<Breed,BreedDto>().ReverseMap();
         CreateMap<Kind,KindDto>().ReverseMap();
-        CreateMap<Laboratory,LaboratoryDto>().ReverseMap();
+        CreateMap<Laboratory,LaboratoryDto>().ReverseMap();        
         CreateMap<MedicalTreatment,MedicalTreatmentDto>().ReverseMap();
         CreateMap<Medicine,MedicineDto>().ReverseMap();
         CreateMap<MovementMedicine,MovementMedicineDto>().ReverseMap();

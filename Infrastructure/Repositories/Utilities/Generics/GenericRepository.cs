@@ -25,12 +25,14 @@ public abstract class GenericRepository<T> where T: class{
     public virtual async Task<IEnumerable<T>> GetAllAsync() => await GetAll();
     public virtual async Task<IEnumerable<T>> GetAllAsync(Expression<Func<T, bool>> expression) => await GetAll(expression);
 
-    protected virtual async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? expression = null)
-    {
+    protected async Task<IEnumerable<T>> GetAll(Expression<Func<T, bool>>? expression = null){
+        var source = Getsource();
         if (expression is not null)
         {
-            return await Entity.Where(expression).ToListAsync();
+            return await source.Where(expression).ToListAsync();
         }
-        return await Entity.ToListAsync();
+        return await source.ToListAsync();
     }    
+
+    protected virtual IQueryable<T> Getsource() => Entity;
 }

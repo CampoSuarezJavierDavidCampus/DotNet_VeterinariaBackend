@@ -81,6 +81,44 @@ public class MedicineController : BaseApiController{
         }
     }
 
+    //*2 Listar los medicamentos que pertenezcan a el laboratorio Genfar
+    [HttpGet("FindMedicationsByLaboratory")]
+    [MapToApiVersion("1.0")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> FindMedicationsByLaboratory([FromQuery] string laboratoryName){
+        try{
+            var records = await _UnitOfWork.Medicines.FindMedicationsByLaboratory(laboratoryName);
+            if (records == null){return NotFound();}
+            if (!records.Any()){return NoContent();}
+            return Ok(records);
+        }catch (Exception ex){
+            _Logger.LogError(ex.Message);
+            return StatusCode(500,"Some Wrong");
+        }
+    }
+
+    //*5 Listar los medicamentos que tenga un precio de venta mayor a 50000
+    [HttpGet("GetBySalePrice")]
+    [MapToApiVersion("1.0")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> GetBySalePrice([FromQuery] float price){
+        try{
+            var records = await _UnitOfWork.Medicines.GetBySalePrice(price);
+            if (records == null){return NotFound();}
+            if (!records.Any()){return NoContent();}
+            return Ok(records);
+        }catch (Exception ex){
+            _Logger.LogError(ex.Message);
+            return StatusCode(500,"Some Wrong");
+        }
+    }
+
     [HttpPost]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]

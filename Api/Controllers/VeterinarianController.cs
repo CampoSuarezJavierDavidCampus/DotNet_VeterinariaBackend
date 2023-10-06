@@ -81,6 +81,25 @@ public class VeterinarianController : BaseApiController{
         }
     }
 
+    //*1 Crear un consulta que permita visualizar los veterinarios cuya especialidad sea Cirujano vascular.    
+    [HttpGet("GetVeterinariansBySpecialty")]
+    [MapToApiVersion("1.0")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> GetVeterinariansBySpecialty([FromQuery] string Specialty){
+        try{
+            var record = await _UnitOfWork.Veterinarians.GetVeterinariansBySpecialty(Specialty);
+            if (record == null) return NotFound();
+            if(!record.Any()) return NoContent();
+            return Ok(record);
+        }catch (Exception ex){
+            _Logger.LogError(ex.Message);
+            return StatusCode(500,"Some Wrong");
+        }
+    }
+
     [HttpPost]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]

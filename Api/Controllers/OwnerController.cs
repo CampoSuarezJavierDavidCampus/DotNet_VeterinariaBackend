@@ -81,6 +81,25 @@ public class OwnerController : BaseApiController{
         }
     }
 
+    //*4 Listar los propietarios y sus mascotas
+    [HttpGet("GetOwnersWithPets")]
+    [MapToApiVersion("1.0")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult> GetOwnersWithPets(){
+        try{
+            var records = await _UnitOfWork.Owners.GetOwnersWithPets();
+            if (records == null){return NotFound();}
+            if (!records.Any()){return NoContent();}
+            return Ok(_Mapper.Map<List<OwnerWithPets>>(records));
+        }catch (Exception ex){
+            _Logger.LogError(ex.Message);
+            return StatusCode(500,"Some Wrong");
+        }
+    }
+
     [HttpPost]
     [Authorize]
     [ProducesResponseType(StatusCodes.Status201Created)]
