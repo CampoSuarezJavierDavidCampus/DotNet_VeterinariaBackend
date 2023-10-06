@@ -1,5 +1,5 @@
 using Core.Entities;
-using Models.Dtos;
+using Core.Models.Dtos;
 
 namespace Core.Interfaces;
 public interface IProductRepository: IGenericRepositoryWithIntId<Product>{

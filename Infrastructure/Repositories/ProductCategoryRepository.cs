@@ -2,7 +2,7 @@ using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using Models.Dtos;
+using Core.Models.Dtos;
 namespace Infrastructure.Repositories;
 
 public sealed class ProductCategoryRepository : GenericRepositoryWithIntId<ProductCategory>, IProductCategoryRepository{
