@@ -9,15 +9,15 @@ using Core.Entities;
 namespace Api.Controllers;
 [ApiVersion("1.0")]
 [ApiVersion("1.1")]
-public class IMedicalTreatmentController : BaseApiController{
+public class MedicalTreatmentController : BaseApiController{
     private readonly IUnitOfWork _UnitOfWork;
     private readonly IMapper _Mapper;
-    private readonly ILogger<IMedicalTreatmentController> _Logger;
+    private readonly ILogger<MedicalTreatmentController> _Logger;
 
-    public IMedicalTreatmentController (
+    public MedicalTreatmentController (
         IUnitOfWork unitOfWork,
         IMapper mapper,
-        ILogger<IMedicalTreatmentController> logger
+        ILogger<MedicalTreatmentController> logger
     ){
         _UnitOfWork = unitOfWork;
         _Mapper = mapper;
@@ -32,10 +32,10 @@ public class IMedicalTreatmentController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(){
         try{
-            var records = await _UnitOfWork.MedicalTreatmen.GetAllAsync();
+            var records = await _UnitOfWork.MedicalTreatments.GetAllAsync();
             if (records == null){return NotFound();}
             if (!records.Any()){return NoContent();}
-            return Ok(_Mapper.Map<List<IMedicalTreatmentDto>>(records));
+            return Ok(_Mapper.Map<List<MedicalTreatmentDto>>(records));
         }catch (Exception ex){
             _Logger.LogError(ex.Message);
             return StatusCode(500,"Some Wrong");
@@ -49,9 +49,9 @@ public class IMedicalTreatmentController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult> Get(int id){
         try{
-            var record = await _UnitOfWork.MedicalTreatmen.GetByIdAsync(id);
+            var record = await _UnitOfWork.MedicalTreatments.GetByIdAsync(id);
             if (record == null){return NotFound();}
-            return Ok(_Mapper.Map<IMedicalTreatmentDto>(record));
+            return Ok(_Mapper.Map<MedicalTreatmentDto>(record));
         }catch (Exception ex){
             _Logger.LogError(ex.Message);
             return StatusCode(500,"Some Wrong");
@@ -69,11 +69,11 @@ public class IMedicalTreatmentController : BaseApiController{
     public async Task<ActionResult> Get11([FromQuery] Params conf){
         try{
             var param = new Param(conf);
-            var records = await _UnitOfWork.MedicalTreatmen.GetAllAsync();
+            var records = await _UnitOfWork.MedicalTreatments.GetAllAsync();
             if (records == null){return NotFound();}
             if (!records.Any()){return NoContent();}
-            var recordDtos = _Mapper.Map<List<IMedicalTreatmentDto>>(records);
-            IPager<IMedicalTreatmentDto> pager = new Pager<IMedicalTreatmentDto>(recordDtos,records?.Count(),param) ;
+            var recordDtos = _Mapper.Map<List<MedicalTreatmentDto>>(records);
+            IPager<MedicalTreatmentDto> pager = new Pager<MedicalTreatmentDto>(recordDtos,records?.Count(),param) ;
             return Ok(pager);
         }catch (Exception ex){
             _Logger.LogError(ex.Message);
@@ -86,14 +86,14 @@ public class IMedicalTreatmentController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult> Post(IMedicalTreatmentDto recordDto){
+    public async Task<ActionResult> Post(MedicalTreatmentDto recordDto){
         try{
             if(recordDto == null){return BadRequest();}
-            if(_UnitOfWork.MedicalTreatmen.ItAlreadyExists(recordDto)){
+            if(_UnitOfWork.MedicalTreatments.ItAlreadyExists(recordDto)){
                 return Conflict("ya se encuentra registrado");
             }
-            var record = _Mapper.Map<IMedicalTreatment>(recordDto);
-            _UnitOfWork.MedicalTreatmen.Add(record);
+            var record = _Mapper.Map<MedicalTreatment>(recordDto);
+            _UnitOfWork.MedicalTreatments.Add(record);
             await _UnitOfWork.SaveAsync();
             return Created(nameof(Post),new {id= record.Id, recordDto});
         }catch (Exception ex){
@@ -111,15 +111,15 @@ public class IMedicalTreatmentController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<IMedicalTreatmentDto>> Put(int id, [FromBody]IMedicalTreatmentDto? recordDto){
+    public async Task<ActionResult<MedicalTreatmentDto>> Put(int id, [FromBody]MedicalTreatmentDto? recordDto){
         try{
             if(recordDto == null){return BadRequest();}
-            if(_UnitOfWork.MedicalTreatmen.ItAlreadyExists(recordDto)){
+            if(_UnitOfWork.MedicalTreatments.ItAlreadyExists(recordDto)){
                 return Conflict("ya se encuentra registrado");
             }
-            var record = _Mapper.Map<IMedicalTreatment>(recordDto);
+            var record = _Mapper.Map<MedicalTreatment>(recordDto);
             record.Id = id;
-            _UnitOfWork.MedicalTreatmen.Update(record);
+            _UnitOfWork.MedicalTreatments.Update(record);
             await _UnitOfWork.SaveAsync();
             return NoContent();
         }catch (Exception ex){
@@ -136,9 +136,9 @@ public class IMedicalTreatmentController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Delete(int id){
         try{
-            var record = await _UnitOfWork.MedicalTreatmen.GetByIdAsync(id);
+            var record = await _UnitOfWork.MedicalTreatments.GetByIdAsync(id);
             if(record == null){return NotFound();}
-            _UnitOfWork.MedicalTreatmen.Remove(record);
+            _UnitOfWork.MedicalTreatments.Remove(record);
             await _UnitOfWork.SaveAsync();
             return NoContent();
         }catch (Exception ex){
