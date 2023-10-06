@@ -41,7 +41,8 @@ public class AuthController:BaseApiController{
         var defaultRol =  (await _UnitOfWork.Roles.GetRolByRoleName( Roles.Employee ))!;        
         try{
             user.Roles.Add(defaultRol);
-            _UnitOfWork.Users.Add(user);
+            user.Id = Guid.NewGuid().ToString();
+            _UnitOfWork.Users.Add(user);            
             await _UnitOfWork.SaveAsync();
             return Ok($"El usuario  {model.UserName} ha sido registrado exitosamente");
 
@@ -59,7 +60,7 @@ public class AuthController:BaseApiController{
         TokenResponse userData = new(){IsAuthenticated = false,};
  
         User? user = await _UnitOfWork.Users.GetUserByName(model.UserName!);
-
+        
         //-Validate User
         if (user == null){//-Validar existencia            
             userData.Message = $"No existe ningún usuario con el userName {model.UserName}.";
