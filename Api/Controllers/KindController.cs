@@ -111,8 +111,9 @@ public class KindController : BaseApiController{
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<ActionResult<KindDto>> Put(int id, [FromBody]KindDto? recordDto){
+    public async Task<ActionResult> Put(int id, [FromBody]KindDto? recordDto){
         try{
+            Console.WriteLine("Entro\t\t\n\n\n\n");
             if(recordDto == null){return BadRequest();}
             if(_UnitOfWork.Kinds.ItAlreadyExists(recordDto)){
                 return Conflict("ya se encuentra registrado");
