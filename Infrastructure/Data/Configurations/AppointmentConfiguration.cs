@@ -38,6 +38,36 @@ public class AppointmentConfiguration : IEntityTypeConfiguration<Appointment>{
         
         builder.HasOne(x => x.Veterinarian)
             .WithMany(x => x.Appointments)
-            .HasForeignKey(x => x.VeterinarianId);              
+            .HasForeignKey(x => x.VeterinarianId);   
+
+        
+        builder.HasData(
+            GetData(50)
+        );           
+    }
+
+   
+
+    private static IEnumerable<Appointment> GetData(int numberoFItems){
+        string[] razones = {
+                "vacunacion",
+                "infeccion",
+                "terapia",
+                "vision"
+        };
+        Random random = new();
+        List<Appointment> data = new();
+        for (int i = 1; i < numberoFItems; i++){
+            
+            data.Add(new(){
+                Id = i,
+                Date = DateTime.Now.AddDays(- random.Next(1,365)).AddHours(random.Next(-2, 5)),
+                Reason = razones[random.Next(0,3)],
+                PetId = random.Next(1,6),
+                VeterinarianId = random.Next(1,3)
+            });
+        }
+
+        return data;
     }
 }

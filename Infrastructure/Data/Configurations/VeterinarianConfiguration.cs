@@ -31,5 +31,29 @@ public class VeterinarianConfiguration : IEntityTypeConfiguration<Veterinarian>{
             .IsRequired()
             .HasColumnName("Especialidad")
             .HasMaxLength(100);
+
+        builder.HasData(
+            new{
+                Id = 1,
+                Name = "VeterinarioA",
+                Email = "veterinarioa@gmail.com",
+                PhoneNumber = 123,
+                Specialty = "Cirujano Vascular"
+            },
+            new{
+                Id = 2,
+                Name = "Veterinario1V",
+                Email = "veterinariob@gmail.com",
+                PhoneNumber = 456,
+                Specialty = "Fisioterapia"
+            },
+            new{
+                Id = 3,
+                Name = "Veterinario1C",
+                Email = "veterinarioc@gmail.com",
+                PhoneNumber = 7890,
+                Specialty = "Oftalmología"
+            }
+        );
     }
 }

@@ -25,6 +25,57 @@ public class BreedConfiguration : IEntityTypeConfiguration<Breed>{
         builder.HasOne(x => x.Kind)
             .WithMany(x => x.Breeds)
             .HasForeignKey(x => x.KindId);   
+
+        builder.HasData(
+            //-Felina
+            new{
+                Id = 1,
+                Name = "tigre",
+                KindId = 1
+            },
+            new{
+                Id = 2,
+                Name = "jaguar",
+                KindId = 1
+            },
+            new{
+                Id = 3,
+                Name = "león",
+                KindId = 1
+            },
+            //-reptil
+            new{
+                Id = 4,
+                Name = "Cocodrilo",
+                KindId = 2
+            },
+            new{
+                Id = 5,
+                Name = "serpiente",
+                KindId = 2
+            },
+            new{
+                Id = 6,
+                Name = "dinosaurio",
+                KindId = 2
+            },
+            //-Ave
+            new{
+                Id = 7,
+                Name = "aguilas",
+                KindId = 3
+            },
+            new{
+                Id = 8,
+                Name = "Patos",
+                KindId = 3
+            },
+            new{
+                Id = 9,
+                Name = "Kiwis",
+                KindId = 3
+            }
+        );
     }
 }
 

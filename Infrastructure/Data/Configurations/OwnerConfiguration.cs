@@ -26,5 +26,26 @@ public class OwnerConfiguration : IEntityTypeConfiguration<Owner>{
         builder.Property(x => x.PhoneNumber)
             .IsRequired()
             .HasColumnName("Telefono");
+
+        builder.HasData(
+            new{
+                Id = 1,
+                Name = "Propietario1",
+                Email = "Propietario1@gmail.com",
+                PhoneNumber = 1234
+            },
+            new{
+                Id = 2,
+                Name = "Propietario2",
+                Email = "Propietario2@gmail.com",
+                PhoneNumber = 1234
+            },
+            new{
+                Id = 3,
+                Name = "Propietario3",
+                Email = "Propietario3@gmail.com",
+                PhoneNumber = 1234
+            }
+        );
     }
 }

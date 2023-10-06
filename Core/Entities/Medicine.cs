@@ -8,8 +8,8 @@ public class Medicine: BaseEntityWithIntId{
     public int LaboratoryId { get; set; }
     public Laboratory Laboratory { get; set; } = null!;
 
-    public IEnumerable<Supplier> Suppliers { get; set; } = new HashSet<Supplier>();
-    public IEnumerable<MedicationsSuppliers> MedicationsSuppliers { get; set; } = new HashSet<MedicationsSuppliers>();
+    public ICollection<Supplier> Suppliers { get; set; } = new HashSet<Supplier>();
+    public ICollection<MedicationsSuppliers> MedicationsSuppliers { get; set; } = new HashSet<MedicationsSuppliers>();
 
     public ICollection<MedicalTreatment> MedicalTreatments { get; set; } = new HashSet<MedicalTreatment>();
 

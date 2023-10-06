@@ -28,5 +28,26 @@ public class LaboratoryConfiguration : IEntityTypeConfiguration<Laboratory>{
             .IsRequired()
             .HasColumnName("Telefono")
             .HasMaxLength(50);
+
+        builder.HasData(
+            new{
+                Id = 1,
+                Name = "Genfar",
+                Address = "centro comercial unicó",
+                PhoneNumber = 123
+            },
+            new{
+                Id = 2,
+                Name = "MK",
+                Address = "los alamos",
+                PhoneNumber = 456
+            },
+            new{
+                Id = 3,
+                Name = "La Santé",
+                Address = "Avenida siempre viva",
+                PhoneNumber = 789
+            }
+        );
     }
 }

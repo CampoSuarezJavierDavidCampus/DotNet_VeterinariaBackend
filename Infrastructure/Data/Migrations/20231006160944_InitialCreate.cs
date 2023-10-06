@@ -398,6 +398,46 @@ namespace Infrastructure.Data.Migrations
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.InsertData(
+                table: "Especie",
+                columns: new[] { "ID_EspeciePK", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, "felina" },
+                    { 2, "reptil" },
+                    { 3, "ave" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Laboratorio",
+                columns: new[] { "ID_LaboratorioPK", "Direccion", "Nombre", "Telefono" },
+                values: new object[,]
+                {
+                    { 1, "centro comercial unicó", "Genfar", 123 },
+                    { 2, "los alamos", "MK", 456 },
+                    { 3, "Avenida siempre viva", "La Santé", 789 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Propietario",
+                columns: new[] { "ID_PropietarioPK", "CorreoElectronico", "Nombre", "Telefono" },
+                values: new object[,]
+                {
+                    { 1, "Propietario1@gmail.com", "Propietario1", 1234 },
+                    { 2, "Propietario2@gmail.com", "Propietario2", 1234 },
+                    { 3, "Propietario3@gmail.com", "Propietario3", 1234 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Veterinario",
+                columns: new[] { "ID_VeterinarioPK", "CorreoElectronico", "Nombre", "Telefono", "Especialidad" },
+                values: new object[,]
+                {
+                    { 1, "veterinarioa@gmail.com", "VeterinarioA", 123, "Cirujano Vascular" },
+                    { 2, "veterinariob@gmail.com", "Veterinario1V", 456, "Fisioterapia" },
+                    { 3, "veterinarioc@gmail.com", "Veterinario1C", 7890, "Oftalmología" }
+                });
+
+            migrationBuilder.InsertData(
                 table: "role",
                 columns: new[] { "ID_RolPK", "Nombre" },
                 values: new object[,]
@@ -405,6 +445,107 @@ namespace Infrastructure.Data.Migrations
                     { 1, "Administrator" },
                     { 2, "Manager" },
                     { 3, "Employee" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Medicamento",
+                columns: new[] { "ID_MedicamentoPK", "ID_LaboratorioFk", "Nombre", "Precio", "CantidadDisponible" },
+                values: new object[,]
+                {
+                    { 1, 3, "Ampicilina", 12500f, 14 },
+                    { 2, 3, "Hidrocortizona", 5500f, 50 },
+                    { 3, 3, "Lorataina", 3300f, 30 },
+                    { 4, 2, "Diclofenalco", 7800f, 114 },
+                    { 5, 2, "Fluoxetina", 15500f, 150 },
+                    { 6, 2, "Acetamenophen", 4400f, 130 },
+                    { 7, 1, "Ibuprofeno", 10500f, 114 },
+                    { 8, 1, "Omeprazol", 3500f, 10 },
+                    { 9, 1, "Naproxeno", 6500f, 430 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Raza",
+                columns: new[] { "ID_RazaPK", "ID_EspecieFK", "Nombre" },
+                values: new object[,]
+                {
+                    { 1, 1, "tigre" },
+                    { 2, 1, "jaguar" },
+                    { 3, 1, "león" },
+                    { 4, 2, "Cocodrilo" },
+                    { 5, 2, "serpiente" },
+                    { 6, 2, "dinosaurio" },
+                    { 7, 3, "aguilas" },
+                    { 8, 3, "Patos" },
+                    { 9, 3, "Kiwis" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Mascota",
+                columns: new[] { "ID_MascotaPK", "FechaNacimiento", "ID_RazaFK", "Nombre", "ID_PropietarioFK" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(771, 4, 6, 11, 9, 44, 345, DateTimeKind.Local).AddTicks(8980), 6, "Barnie", 1 },
+                    { 2, new DateTime(2023, 9, 6, 11, 9, 44, 345, DateTimeKind.Local).AddTicks(8998), 7, "Kus", 2 },
+                    { 3, new DateTime(2023, 5, 29, 11, 9, 44, 345, DateTimeKind.Local).AddTicks(9003), 2, "Draco", 2 },
+                    { 4, new DateTime(2023, 9, 26, 11, 9, 44, 345, DateTimeKind.Local).AddTicks(9004), 8, "Picote", 2 },
+                    { 5, new DateTime(2021, 10, 6, 11, 9, 44, 345, DateTimeKind.Local).AddTicks(9005), 1, "Aquiles", 3 },
+                    { 6, new DateTime(2023, 10, 1, 11, 9, 44, 345, DateTimeKind.Local).AddTicks(9006), 5, "Peter", 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Cita",
+                columns: new[] { "Id_Cita", "Fecha", "ID_MascotaFk", "Motivo", "ID_VeterinarioFk" },
+                values: new object[,]
+                {
+                    { 1, new DateTime(2023, 7, 12, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9184), 4, "vacunacion", 2 },
+                    { 2, new DateTime(2023, 3, 31, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9208), 5, "infeccion", 2 },
+                    { 3, new DateTime(2023, 4, 22, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9210), 4, "infeccion", 1 },
+                    { 4, new DateTime(2023, 7, 5, 11, 9, 44, 341, DateTimeKind.Local).AddTicks(9211), 3, "infeccion", 2 },
+                    { 5, new DateTime(2022, 12, 5, 12, 9, 44, 341, DateTimeKind.Local).AddTicks(9212), 5, "vacunacion", 2 },
+                    { 6, new DateTime(2022, 10, 8, 13, 9, 44, 341, DateTimeKind.Local).AddTicks(9215), 5, "terapia", 2 },
+                    { 7, new DateTime(2022, 10, 22, 9, 9, 44, 341, DateTimeKind.Local).AddTicks(9217), 3, "terapia", 2 },
+                    { 8, new DateTime(2023, 9, 20, 14, 9, 44, 341, DateTimeKind.Local).AddTicks(9218), 5, "infeccion", 1 },
+                    { 9, new DateTime(2023, 2, 2, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9219), 3, "infeccion", 1 },
+                    { 10, new DateTime(2023, 2, 23, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9221), 2, "vacunacion", 2 },
+                    { 11, new DateTime(2023, 8, 24, 9, 9, 44, 341, DateTimeKind.Local).AddTicks(9222), 2, "vacunacion", 1 },
+                    { 12, new DateTime(2022, 12, 16, 11, 9, 44, 341, DateTimeKind.Local).AddTicks(9223), 1, "vacunacion", 2 },
+                    { 13, new DateTime(2023, 9, 4, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9225), 1, "infeccion", 1 },
+                    { 14, new DateTime(2023, 2, 4, 9, 9, 44, 341, DateTimeKind.Local).AddTicks(9226), 4, "infeccion", 2 },
+                    { 15, new DateTime(2023, 3, 8, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9227), 3, "vacunacion", 2 },
+                    { 16, new DateTime(2023, 5, 7, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9228), 3, "terapia", 2 },
+                    { 17, new DateTime(2022, 11, 16, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9229), 5, "vacunacion", 2 },
+                    { 18, new DateTime(2023, 4, 5, 13, 9, 44, 341, DateTimeKind.Local).AddTicks(9232), 5, "vacunacion", 1 },
+                    { 19, new DateTime(2023, 1, 7, 12, 9, 44, 341, DateTimeKind.Local).AddTicks(9233), 3, "infeccion", 1 },
+                    { 20, new DateTime(2022, 12, 8, 12, 9, 44, 341, DateTimeKind.Local).AddTicks(9234), 2, "terapia", 2 },
+                    { 21, new DateTime(2023, 1, 4, 13, 9, 44, 341, DateTimeKind.Local).AddTicks(9235), 2, "vacunacion", 1 },
+                    { 22, new DateTime(2023, 3, 31, 14, 9, 44, 341, DateTimeKind.Local).AddTicks(9236), 5, "terapia", 2 },
+                    { 23, new DateTime(2023, 2, 2, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9238), 4, "infeccion", 1 },
+                    { 24, new DateTime(2023, 8, 18, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9239), 4, "infeccion", 1 },
+                    { 25, new DateTime(2023, 5, 15, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9240), 3, "infeccion", 2 },
+                    { 26, new DateTime(2023, 4, 19, 9, 9, 44, 341, DateTimeKind.Local).AddTicks(9242), 3, "vacunacion", 1 },
+                    { 27, new DateTime(2023, 3, 24, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9243), 3, "terapia", 1 },
+                    { 28, new DateTime(2023, 6, 10, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9244), 5, "vacunacion", 1 },
+                    { 29, new DateTime(2023, 9, 7, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9245), 4, "terapia", 1 },
+                    { 30, new DateTime(2023, 8, 11, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9247), 4, "infeccion", 2 },
+                    { 31, new DateTime(2023, 6, 18, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9248), 3, "terapia", 2 },
+                    { 32, new DateTime(2023, 2, 17, 9, 9, 44, 341, DateTimeKind.Local).AddTicks(9249), 3, "infeccion", 2 },
+                    { 33, new DateTime(2023, 7, 10, 11, 9, 44, 341, DateTimeKind.Local).AddTicks(9250), 2, "vacunacion", 2 },
+                    { 34, new DateTime(2023, 5, 26, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9253), 4, "terapia", 2 },
+                    { 35, new DateTime(2023, 8, 24, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9254), 1, "terapia", 1 },
+                    { 36, new DateTime(2022, 11, 23, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9255), 3, "infeccion", 1 },
+                    { 37, new DateTime(2022, 12, 26, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9256), 1, "terapia", 1 },
+                    { 38, new DateTime(2023, 7, 30, 11, 9, 44, 341, DateTimeKind.Local).AddTicks(9258), 2, "terapia", 2 },
+                    { 39, new DateTime(2023, 6, 15, 11, 9, 44, 341, DateTimeKind.Local).AddTicks(9259), 5, "infeccion", 2 },
+                    { 40, new DateTime(2023, 1, 25, 9, 9, 44, 341, DateTimeKind.Local).AddTicks(9260), 5, "infeccion", 2 },
+                    { 41, new DateTime(2023, 7, 31, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9262), 4, "terapia", 1 },
+                    { 42, new DateTime(2023, 5, 13, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9263), 5, "infeccion", 1 },
+                    { 43, new DateTime(2023, 7, 5, 10, 9, 44, 341, DateTimeKind.Local).AddTicks(9264), 3, "infeccion", 1 },
+                    { 44, new DateTime(2023, 4, 13, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9265), 4, "terapia", 1 },
+                    { 45, new DateTime(2023, 3, 1, 15, 9, 44, 341, DateTimeKind.Local).AddTicks(9267), 3, "terapia", 2 },
+                    { 46, new DateTime(2023, 1, 4, 9, 9, 44, 341, DateTimeKind.Local).AddTicks(9268), 1, "vacunacion", 2 },
+                    { 47, new DateTime(2023, 5, 10, 12, 9, 44, 341, DateTimeKind.Local).AddTicks(9295), 4, "infeccion", 2 },
+                    { 48, new DateTime(2023, 5, 31, 13, 9, 44, 341, DateTimeKind.Local).AddTicks(9296), 5, "vacunacion", 2 },
+                    { 49, new DateTime(2023, 9, 9, 13, 9, 44, 341, DateTimeKind.Local).AddTicks(9297), 1, "terapia", 1 }
                 });
 
             migrationBuilder.CreateIndex(

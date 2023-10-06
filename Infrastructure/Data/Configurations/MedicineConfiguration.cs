@@ -55,5 +55,75 @@ public class MedicineConfiguration : IEntityTypeConfiguration<Medicine>{
                         .HasColumnName("ID_MedicamentoPK");
                 }
             );
+
+            builder.HasData(
+                //-La santé
+                new{
+                    Id=1,
+                    Name = "Ampicilina",
+                    Stock = 14,
+                    Price =(float) 12500,
+                    LaboratoryId = 3
+                },
+                new{
+                    Id=2,
+                    Name = "Hidrocortizona",
+                    Stock = 50,
+                    Price =(float) 5500,
+                    LaboratoryId = 3
+                },
+                new{
+                    Id=3,
+                    Name = "Lorataina",
+                    Stock = 30,
+                    Price =(float) 3300,
+                    LaboratoryId = 3
+                },
+
+                //-MK
+                new{
+                    Id=4,
+                    Name = "Diclofenalco",
+                    Stock = 114,
+                    Price =(float) 7800,
+                    LaboratoryId = 2
+                },
+                new{
+                    Id=5,
+                    Name = "Fluoxetina",
+                    Stock = 150,
+                    Price =(float) 15500,
+                    LaboratoryId = 2
+                },
+                new{
+                    Id=6,
+                    Name = "Acetamenophen",
+                    Stock = 130,
+                    Price =(float) 4400,
+                    LaboratoryId = 2
+                },
+                //-Genfar
+                new{
+                    Id=7,
+                    Name = "Ibuprofeno",
+                    Stock = 114,
+                    Price =(float) 10500,
+                    LaboratoryId = 1
+                },
+                new{
+                    Id=8,
+                    Name = "Omeprazol",
+                    Stock = 10,
+                    Price =(float) 3500,
+                    LaboratoryId = 1
+                },
+                new{
+                    Id=9,
+                    Name = "Naproxeno",
+                    Stock = 430,
+                    Price =(float) 6500,
+                    LaboratoryId = 1
+                }
+            );
     }
 }

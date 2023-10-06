@@ -16,6 +16,21 @@ public class KindConfiguration : IEntityTypeConfiguration<Kind>{
         builder.Property(x => x.Name)
             .IsRequired()
             .HasColumnName("Nombre")
-            .HasMaxLength(50);                
+            .HasMaxLength(50);     
+
+        builder.HasData(
+            new{
+                Id = 1,
+                Name = "felina"
+            },
+            new{
+                Id = 2,
+                Name = "reptil"
+            },
+            new{
+                Id = 3,
+                Name = "ave"
+            }
+        );
     }
 }
