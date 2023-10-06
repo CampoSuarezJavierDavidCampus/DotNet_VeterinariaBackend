@@ -17,7 +17,7 @@ public class PetConfiguration : IEntityTypeConfiguration<Pet>{
             .IsRequired()
             .HasColumnName("ID_PropietarioFK");
         
-        builder.Property(x => x.Breed)
+        builder.Property(x => x.BreedId)
             .IsRequired()
             .HasColumnName("ID_RazaFK");
         

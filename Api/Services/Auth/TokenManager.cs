@@ -35,7 +35,7 @@ public sealed class TokenManager : ITokenManager{
         //-Crear Usuario
         User user = new(){
             Email = model.Email!,
-            UserName = model.Username!
+            UserName = model.UserName!
         };
 
         //-Encriptar Password

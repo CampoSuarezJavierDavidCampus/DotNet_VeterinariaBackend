@@ -1,13 +1,16 @@
 using System.Net;
 using AspNetCoreRateLimit;
+using Core.Entities;
 using Core.Interfaces;
 using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc.Versioning;
 
 namespace Api.Extensions;
 public static class SeviceExtensions{
     public static void AddApiServices(this IServiceCollection services){
-        services.AddSingleton<IUnitOfWork,UnitOfWork>();
+        services.AddScoped<IPasswordHasher<User>,PasswordHasher<User>>();        
+        services.AddScoped<IUnitOfWork,UnitOfWork>();
     }
 
     public static void ConfigureCors(this IServiceCollection services){

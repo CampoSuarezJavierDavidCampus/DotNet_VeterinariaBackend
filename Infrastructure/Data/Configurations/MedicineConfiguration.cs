@@ -51,7 +51,7 @@ public class MedicineConfiguration : IEntityTypeConfiguration<Medicine>{
                     t.Property(x => x.SupplierId)
                         .HasColumnName("ID_proveedorPK");
 
-                    t.Property(x => x.Medicines)
+                    t.Property(x => x.MedicinesId)
                         .HasColumnName("ID_MedicamentoPK");
                 }
             );

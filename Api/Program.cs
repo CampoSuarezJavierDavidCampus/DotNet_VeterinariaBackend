@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Text;
 using Api.Extensions;
 using Infrastructure.Data;
@@ -9,19 +10,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 //* Add services to the container.
 builder.Services.AddControllers();
-builder.Services.AddControllers();
 
 //*Api Extensions
 builder.Services.AddApiServices();
+builder.Services.ConfigureCors();
 builder.Services.ConfigureRateLimiting();
 builder.Services.ConfigureVersioning();
-builder.Services.ConfigureCors();
+builder.Services.AddAutoMapper(Assembly.GetEntryAssembly());
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 //*JWT
-//-Add Authentication
 builder.Services.AddAuthentication(x => {
         x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
         x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -37,7 +37,7 @@ builder.Services.AddAuthentication(x => {
             ValidateIssuerSigningKey = true
         };
     });
-builder.Services.AddAuthentication();
+builder.Services.AddAuthentication(); 
 
 //*DbContext Configuration
 builder.Services.AddDbContext<ApiContext>(opts =>{
@@ -45,6 +45,9 @@ builder.Services.AddDbContext<ApiContext>(opts =>{
 
     opts.UseMySql(connection,ServerVersion.AutoDetect(connection));
 });
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -55,15 +58,13 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-app.UseAuthentication();
-
-//*Api Extensions
-app.UseRateLimiter();
 app.UseCors("CorsPolicy");
-app.UseApiVersioning();
+
+app.UseHttpsRedirection();
+app.UseRateLimiter();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 
