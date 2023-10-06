@@ -4,37 +4,29 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Persistence.Data.Configurations;
-public class RoleConfiguration : IEntityTypeConfiguration<Role>{
-    public void Configure(EntityTypeBuilder<Role> builder){
-        builder.ToTable("role");
+public class LaboratoryConfiguration : IEntityTypeConfiguration<Laboratory>{
+    public void Configure(EntityTypeBuilder<Laboratory> builder){
+        builder.ToTable("Laboratorio");
         builder.HasKey(x => x.Id);
-        
+
         builder.Property(x => x.Id)
             .IsRequired()
             .HasAnnotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn)
-            .HasColumnName("ID_RolPK");
+            .HasColumnName("ID_LaboratorioPK");                
         
         builder.Property(x => x.Name)
             .IsRequired()
             .HasColumnName("Nombre")
             .HasMaxLength(50);
-                                
-        builder.HasData(
-            new {
-                Id = 1,
-                Name = "Administrator"
-            },
-
-            new {
-                Id = 2,
-                Name = "Manager"
-            },
-
-            new {
-                Id = 3,
-                Name = "Employee"
-            }
-        );
         
+        builder.Property(x => x.Address)
+            .IsRequired()
+            .HasColumnName("Direccion")
+            .HasMaxLength(100);
+        
+        builder.Property(x => x.PhoneNumber)
+            .IsRequired()
+            .HasColumnName("Telefono")
+            .HasMaxLength(50);
     }
 }
