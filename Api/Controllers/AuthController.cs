@@ -1,14 +1,10 @@
-using System.Security.Claims;
-using Api.Dtos.Auth;
 using Api.Helpers;
-using Domain.Entities;
-using Domain.Enums;
-using Domain.Interfaces;
+using Core.Entities;
+using Core.Interfaces;
 using Domain.Interfaces.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Controllers;
 public class AuthController:BaseApiController{

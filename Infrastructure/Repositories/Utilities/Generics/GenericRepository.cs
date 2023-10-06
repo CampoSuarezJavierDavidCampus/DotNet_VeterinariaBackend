@@ -7,7 +7,7 @@ public abstract class GenericRepository<T> where T: class{
     abstract protected DbSet<T> Entity { get; }
     
 
-    public async virtual Task<T> FindFirst(Expression<Func<T, bool>> expression){
+    public async virtual Task<T?> FindFirst(Expression<Func<T, bool>> expression){
         if (expression != null){
             var res = await Entity.Where(expression).ToListAsync();
             return res.First();
